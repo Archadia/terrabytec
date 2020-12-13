@@ -1,3 +1,4 @@
+// #include <time.h>
 #include "terrabyte.h"
 
 namespace pkr
@@ -7,9 +8,9 @@ namespace pkr
         glfwSwapInterval(b ? 1 : 0);
     }
 
-    void SetWindowTitle(TERRABYTE_ENGINE& engine, std::string title)
+    void SetWindowTitle(TERRABYTE_ENGINE& engine, const char* title)
     {
-        glfwSetWindowTitle(engine.window, title.c_str());
+        glfwSetWindowTitle(engine.window, title);
     }
 
     VEC2D GetMousePosition(TERRABYTE_ENGINE& engine)
@@ -46,7 +47,7 @@ namespace pkr
         return (float) (size.x / size.y);
     }
 
-    TERRABYTE_ENGINE* CreateEngine(uint32_t width, uint32_t height, std::string title)
+    TERRABYTE_ENGINE* CreateEngine(uint32_t width, uint32_t height, const char* title)
     {
         uint32_t rInit = glfwInit();
         if(rInit)
@@ -57,7 +58,7 @@ namespace pkr
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
 
             TERRABYTE_ENGINE* engine = (TERRABYTE_ENGINE*) TERRABYTE_MALLOC(sizeof(TERRABYTE_ENGINE));
-            GLFWwindow* rWindow = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+            GLFWwindow* rWindow = glfwCreateWindow(width, height, title, NULL, NULL);
             if(rWindow)
             {
                 engine->window = rWindow;
@@ -82,20 +83,24 @@ namespace pkr
         EngineLog("Starting TerrabyteEngine...");
         const double dt = 0.01;
 
-        double startTime = std::chrono::high_resolution_clock::now().time_since_epoch().count() / 1000000000.0;
+        clock_t start_t = clock();
+
         double accumulator = 0.0;
+        double fpsAccumulator = 0;
+
+        uint32_t fpsCount;
+        engine.fps = 0;
 
         while(!glfwWindowShouldClose(engine.window))
         {
-            double endTime = std::chrono::high_resolution_clock::now().time_since_epoch().count() / 1000000000.0;
-            double frameTime = (endTime - startTime);
-            startTime = endTime;
-            accumulator += frameTime;
+            clock_t end_t = clock();
+            double frame_t = (double) (end_t - start_t) / CLOCKS_PER_SEC;
+            start_t = end_t;
+            accumulator += frame_t;
 
             while(accumulator >= dt)
             {
                 update(dt);
-
                 accumulator -= dt;
             }
 
@@ -103,6 +108,15 @@ namespace pkr
             draw();
             glfwSwapBuffers(engine.window);
             glfwPollEvents();
+
+            fpsCount++;
+            fpsAccumulator += frame_t;
+            if(fpsAccumulator >= 1.0)
+            {
+                engine.fps = fpsCount;
+                fpsCount = 0;
+                fpsAccumulator -= 1;
+            }
         }
         EngineLog("Engine terminated.");
         glfwTerminate();

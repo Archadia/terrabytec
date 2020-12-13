@@ -1,5 +1,5 @@
 #include <stdint.h>
-#include <string>
+#include <stdio.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <chrono>
@@ -8,6 +8,8 @@
 // #define TERRABYTE_MEMORY_VERBOSE
 
 #define TERRABYTE_LOG "[TerrabyteEngine]"
+
+/* Memory */
 
 #ifndef TERRABYTE_MEMORY_DEF
 
@@ -22,12 +24,15 @@ void MemoryFree(void* pointer, const char* file, uint32_t line);
 #define TERRABYTE_MEMORY_DEF
 #endif
 
+/* Engine/Display */
+
 #ifndef TERRABYTE_ENGINE_DEF
 namespace pkr
 {        
     struct TERRABYTE_ENGINE
     {
         GLFWwindow* window;
+        uint32_t fps;
     };
 
     inline void EngineLog(const char* text)
@@ -36,13 +41,13 @@ namespace pkr
     }
 
     extern void SetEngineVSync(bool b);
-    extern void SetWindowTitle(TERRABYTE_ENGINE& engine, std::string title);
+    extern void SetWindowTitle(TERRABYTE_ENGINE& engine, const char* title);
     extern VEC2D GetMousePosition(TERRABYTE_ENGINE& engine);
     extern VEC2F GetWindowContentScale(TERRABYTE_ENGINE& engine);
     extern VEC2I GetFrameBufferSize(TERRABYTE_ENGINE& engine);
     extern VEC2I GetWindowSize(TERRABYTE_ENGINE& engine);
     extern float GetWindowAspectRatio(TERRABYTE_ENGINE& engine);
-    extern TERRABYTE_ENGINE* CreateEngine(uint32_t width, uint32_t height, std::string title);
+    extern TERRABYTE_ENGINE* CreateEngine(uint32_t width, uint32_t height, const char* title);
     extern void StartEngine(TERRABYTE_ENGINE& engine, void (*update)(double dt), void (*draw)());
 }
 #define TERRABYTE_ENGINE_DEF

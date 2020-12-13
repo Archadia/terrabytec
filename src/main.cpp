@@ -5,7 +5,10 @@ pkr::TERRABYTE_ENGINE* engine;
 
 void Update(double dt)
 {
+    char buf[32];
+    snprintf(buf, 32, "Title - %d fps", engine->fps);
 
+    pkr::SetWindowTitle(*engine, buf);
 }
 
 void Draw()
@@ -16,7 +19,7 @@ void Draw()
 
 void Init()
 {
-
+    pkr::SetEngineVSync(false);
 }
 
 int main()
