@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include <stdio.h>
 #include "terrabyte.h"
 
 void* MemoryAllocate(uint32_t size, const char* file, uint32_t line)
