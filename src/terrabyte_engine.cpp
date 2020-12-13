@@ -56,7 +56,7 @@ namespace pkr
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
 
-            TERRABYTE_ENGINE* engine = new TERRABYTE_ENGINE();
+            TERRABYTE_ENGINE* engine = (TERRABYTE_ENGINE*) TERRABYTE_MALLOC(sizeof(TERRABYTE_ENGINE));
             GLFWwindow* rWindow = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
             if(rWindow)
             {
@@ -70,7 +70,7 @@ namespace pkr
                 } else EngineLog("Unable to load GLAD.");
             }
             else EngineLog("Unable to create GLFW window.");
-            delete engine;
+            TERRABYTE_FREE(engine);
         }
         else EngineLog("Unable to initialise GLFW.");
         glfwTerminate();
@@ -106,5 +106,6 @@ namespace pkr
         }
         EngineLog("Engine terminated.");
         glfwTerminate();
+        TERRABYTE_FREE(&engine);
     }
 }

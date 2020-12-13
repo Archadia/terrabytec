@@ -5,6 +5,8 @@
 #include <chrono>
 #include "terrabyte_math.h"
 
+// #define TERRABYTE_MEMORY_VERBOSE
+
 #define TERRABYTE_LOG "[TerrabyteEngine]"
 
 #ifndef TERRABYTE_MEMORY_DEF
@@ -15,13 +17,10 @@ void MemoryFree(void* pointer, const char* file, uint32_t line);
 
 #define TERRABYTE_MALLOC(s) MemoryAllocate(s, __FILE__, __LINE__)
 #define TERRABYTE_CALLOC(c, s) MemoryCAllocate(c, s, __FILE__, __LINE__)
-#define TERRABYTE_FREE(s) MemoryFree(s, __FILE__, __LINE__)
+#define TERRABYTE_FREE(p) MemoryFree(p, __FILE__, __LINE__)
 
 #define TERRABYTE_MEMORY_DEF
 #endif
-
-// #ifndef TERRABYTE_MEMORY_DISABLE
-// #endif
 
 #ifndef TERRABYTE_ENGINE_DEF
 namespace pkr

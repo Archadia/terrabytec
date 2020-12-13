@@ -14,14 +14,16 @@ void Draw()
     glClearColor(1,1,1,1);
 }
 
+void Init()
+{
+
+}
+
 int main()
 {
     engine = pkr::CreateEngine(800, 600, "Title");
 
-    void* data = TERRABYTE_MALLOC(sizeof(char) * 5);
-
-    TERRABYTE_FREE(data);
-
+    Init();
     pkr::StartEngine(*engine, &Update, &Draw);
     return 0;
 }
