@@ -7,8 +7,25 @@
 
 #define TERRABYTE_LOG "[TerrabyteEngine]"
 
+#ifndef TERRABYTE_MEMORY_DEF
+
+void* MemoryAllocate(uint32_t size, const char* file, uint32_t line);
+void* MemoryCAllocate(uint32_t count, uint32_t size, const char* file, uint32_t line);
+void MemoryFree(void* pointer, const char* file, uint32_t line);
+
+#define TERRABYTE_MALLOC(s) MemoryAllocate(s, __FILE__, __LINE__)
+#define TERRABYTE_CALLOC(c, s) MemoryCAllocate(c, s, __FILE__, __LINE__)
+#define TERRABYTE_FREE(s) MemoryFree(s, __FILE__, __LINE__)
+
+#define TERRABYTE_MEMORY_DEF
+#endif
+
+// #ifndef TERRABYTE_MEMORY_DISABLE
+// #endif
+
+#ifndef TERRABYTE_ENGINE_DEF
 namespace pkr
-{    
+{        
     struct TERRABYTE_ENGINE
     {
         GLFWwindow* window;
@@ -19,111 +36,15 @@ namespace pkr
         printf("%s %s\n", TERRABYTE_LOG, text);
     }
 
-    void SetEngineVSync(bool b)
-    {
-        glfwSwapInterval(b ? 1 : 0);
-    }
-
-    void SetWindowTitle(TERRABYTE_ENGINE& engine, std::string title)
-    {
-        glfwSetWindowTitle(engine.window, title.c_str());
-    }
-
-    VEC2D GetMousePosition(TERRABYTE_ENGINE& engine)
-    {
-        VEC2D vec;
-        glfwGetCursorPos(engine.window, &vec.x, &vec.y);
-        return vec;
-    }
-
-    VEC2F GetWindowContentScale(TERRABYTE_ENGINE& engine)
-    {
-        VEC2F vec;
-        glfwGetWindowContentScale(engine.window, &vec.x, &vec.y);
-        return vec;
-    }
-
-    VEC2I GetFrameBufferSize(TERRABYTE_ENGINE& engine)
-    {
-        VEC2I vec;
-        glfwGetFramebufferSize(engine.window, &vec.x, &vec.y);
-        return vec;
-    }
-
-    VEC2I GetWindowSize(TERRABYTE_ENGINE& engine)
-    {
-        VEC2I vec;
-        glfwGetWindowSize(engine.window, &vec.x, &vec.y);
-        return vec;
-    }
-
-    float GetWindowAspectRatio(TERRABYTE_ENGINE& engine)
-    {
-        VEC2I size = GetWindowSize(engine);
-        return (float) (size.x / size.y);
-    }
-
-    TERRABYTE_ENGINE* CreateEngine(uint32_t width, uint32_t height, std::string title)
-    {
-        uint32_t rInit = glfwInit();
-        if(rInit)
-        {
-            glfwDefaultWindowHints();
-            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
-
-            TERRABYTE_ENGINE* engine = new TERRABYTE_ENGINE();
-            GLFWwindow* rWindow = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
-            if(rWindow)
-            {
-                engine->window = rWindow;
-
-                glfwMakeContextCurrent(rWindow);
-                uint32_t rGlad = gladLoadGL();
-                if(rGlad)
-                {
-                    return engine;
-                } else EngineLog("Unable to load GLAD.");
-            }
-            else EngineLog("Unable to create GLFW window.");
-            delete engine;
-        }
-        else EngineLog("Unable to initialise GLFW.");
-        glfwTerminate();
-        return nullptr;
-    }
-
-    void StartEngine(TERRABYTE_ENGINE& engine, void (*update)(double dt), void (*draw)())
-    {
-        EngineLog("Starting TerrabyteEngine...");
-
-        const double dt = 0.01;
-
-        double startTime = std::chrono::high_resolution_clock::now().time_since_epoch().count() / 1000000000.0;
-        double accumulator = 0.0;
-
-        while(!glfwWindowShouldClose(engine.window))
-        {
-            double endTime = std::chrono::high_resolution_clock::now().time_since_epoch().count() / 1000000000.0;
-            double frameTime = (endTime - startTime);
-            startTime = endTime;
-
-            accumulator += frameTime;
-
-            while(accumulator >= dt)
-            {
-                update(dt);
-
-                accumulator -= dt;
-            }
-
-            glClear(GL_COLOR_BUFFER_BIT);
-            draw();
-            glfwSwapBuffers(engine.window);
-            glfwPollEvents();
-        }
-        EngineLog("Engine terminated.");
-        glfwTerminate();
-    }
+    extern void SetEngineVSync(bool b);
+    extern void SetWindowTitle(TERRABYTE_ENGINE& engine, std::string title);
+    extern VEC2D GetMousePosition(TERRABYTE_ENGINE& engine);
+    extern VEC2F GetWindowContentScale(TERRABYTE_ENGINE& engine);
+    extern VEC2I GetFrameBufferSize(TERRABYTE_ENGINE& engine);
+    extern VEC2I GetWindowSize(TERRABYTE_ENGINE& engine);
+    extern float GetWindowAspectRatio(TERRABYTE_ENGINE& engine);
+    extern TERRABYTE_ENGINE* CreateEngine(uint32_t width, uint32_t height, std::string title);
+    extern void StartEngine(TERRABYTE_ENGINE& engine, void (*update)(double dt), void (*draw)());
 }
+#define TERRABYTE_ENGINE_DEF
+#endif

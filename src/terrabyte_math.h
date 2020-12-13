@@ -1,3 +1,4 @@
+#ifndef TERRABYTE_MATH_DEF
 namespace pkr
 {
     struct VEC2F
@@ -114,3 +115,5 @@ namespace pkr
         }
     };
 }
+#define TERRABYTE_MATH_DEF
+#endif

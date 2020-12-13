@@ -18,7 +18,6 @@ add_subdirectory(dependencies/data_desk)
 file(GLOB SOURCE
     "src/*.h"
     "src/*.cpp"
-    "src/*.c"
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE} ${GLAD_SOURCE})
