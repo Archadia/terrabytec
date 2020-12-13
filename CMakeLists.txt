@@ -2,8 +2,9 @@ cmake_minimum_required(VERSION 3.17)
 
 project(terrabytec)
 
-# Add our own additional includes
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+# Add glad includes.
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/dependencies/glad)
+set(GLAD_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/glad/glad.c)
 
 # Add glfw submodule
 set( GLFW_BUILD_DOCS OFF CACHE BOOL  "GLFW lib only" )
@@ -20,7 +21,7 @@ file(GLOB SOURCE
     "src/*.c"
 )
 
-add_executable(${PROJECT_NAME} ${SOURCE})
+add_executable(${PROJECT_NAME} ${SOURCE} ${GLAD_SOURCE})
 target_link_libraries(${PROJECT_NAME} glfw)
 
 
